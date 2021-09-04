@@ -54,7 +54,9 @@ NODE_API_MODULE(addon, Init)
 //************************************************************************************
 NativeAddon::NativeAddon(const Napi::CallbackInfo& info) : ObjectWrap(info) {
    //initialize maps    
-   /*
+   
+   /* 
+    //do i need this???
     subscriptions = std::make_shared<   std::map<string, shm::pubsub::Subscriber>    >
                                     (
                                       std::initializer_list<std::map<string, shm::pubsub::Subscriber>::value_type>{}
@@ -67,7 +69,8 @@ NativeAddon::NativeAddon(const Napi::CallbackInfo& info) : ObjectWrap(info) {
                                     */
                                     
     /*           
-    //now working for now!                         
+
+    //not working, how to spin in a separeted thread?
     std::thread nativeThread = std::thread( [this] {          
         while (true) {
             for (auto &item : subscriptions) {                 
@@ -77,6 +80,7 @@ NativeAddon::NativeAddon(const Napi::CallbackInfo& info) : ObjectWrap(info) {
             if (CLOSED) break;
         }        
     });    
+
     */
 
 }
@@ -86,10 +90,10 @@ Napi::Value NativeAddon::Publish(const Napi::CallbackInfo& info) {
     string topic = info[0].As<Napi::String>().Utf8Value();
     
     if (!publishers.count(topic)) {        
-        //shm::memory::DefaultCopier *cpy = new shm::memory::DefaultCopier();
+        //shm::memory::DefaultCopier *cpy = new shm::memory::DefaultCopier(); //is this the best way to keep cpy in memory?
         shm::pubsub::Publisher pub = shm::pubsub::Publisher(topic, nullptr);                
         Napi::Buffer<char> buffer = info[1].As<Napi::Buffer<char>>();         
-        pub.publish(reinterpret_cast<void *>(buffer.Data()), buffer.Length());
+        pub.publish(reinterpret_cast<void *>(buffer.Data()), buffer.Length());  //do i need to treat buffer.Data() in any way?
         publishers.insert({topic, std::move(pub)});
     } else {
        Napi::Buffer<char> buff = info[1].As<Napi::Buffer<char>>();             
@@ -110,7 +114,7 @@ Napi::Value NativeAddon::Subscribe(const Napi::CallbackInfo& info) {
         if (onMessageFunc){                        
             onMessageFunc->call([msg](Napi::Env env, std::vector<napi_value> &args) {                
                 Napi::Object payload = Napi::Object::New(env);                         
-                char * buff = reinterpret_cast<char *>(msg->ptr);                  
+                char * buff = reinterpret_cast<char *>(msg->ptr);   //BUG: receive wrong data               
                 args = {Napi::Buffer<char>::Copy(env, buff, (int) msg->size)};                
             });
         }        
