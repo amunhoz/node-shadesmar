@@ -1,0 +1,1 @@
+cmd_Release/obj.target/shadesmar.node := g++ -o Release/obj.target/shadesmar.node -shared -pthread -rdynamic -m64  -Wl,-soname=shadesmar.node -Wl,--start-group Release/obj.target/shadesmar/src/lib.o -Wl,--end-group -lpthread -lstdc++fs -lrt

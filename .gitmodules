@@ -1,0 +1,3 @@
+[submodule "src/packages/shadesmar"]
+	path = src/packages/shadesmar
+	url = https://github.com/Squadrick/shadesmar.git

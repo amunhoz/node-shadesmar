@@ -1,0 +1,26 @@
+{
+  "name": "private_chachapacket",
+  "version": "1.0.1",
+  "description": "Network packet with chacha20 and poly",
+  "main": "index.js",
+  "dependencies": {
+    "napi-thread-safe-callback": "0.0.6",
+    "node-addon-api": "^3.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leenjewel/node-kcp.git"
+  },
+  "keywords": [
+    "protocol",
+    "game",
+    "server"
+  ],
+  "author": "amunhoz",
+  "license": "nope",
+  "gypfile": true
+}
